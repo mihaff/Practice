@@ -11,35 +11,32 @@
     .sidebar .navbar-brand {
         font-size: 70px;
         font-weight: 600;
-        background-image: linear-gradient(to left, #b393d3, #81258b);
         color: #430949;
-        background-clip: text;
-        -webkit-background-clip: text;
-        padding-bottom:40px;
+        padding-bottom: 40px;
     }
 
-    li {
-        list-style-type: none; /* Убираем маркеры */
+li {
+    list-style-type: none;
+}
+
+.sidebar .navbar-toggler {
+    display: none;
+}
+
+.sidebar .nav-link {
+    display: block;
+    color: #4b2020;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 8px 0;
+    transition: background-color 0.3s;
+    list-style-type: none
+}
+
+    .sidebar .nav-link:hover {
+        background-color: #ddd;
     }
 
-    .sidebar .navbar-toggler {
-        display: none;
-    }
-
-
-    .sidebar .nav-link {
-        display: block;
-        color: #4b2020;
-        text-decoration: none;
-        font-size: 18px;
-        padding: 8px 0;
-        transition: background-color 0.3s;
-        list-style-type: none
-    }
-
-        .sidebar .nav-link:hover {
-            background-color: #ddd;
-        }
 
 /* Main content styles */
 .main {
@@ -64,6 +61,7 @@
         }
 
 /* Responsive styles */
+
 @media (max-width: 768px) {
     .sidebar {
         display: none;
@@ -107,11 +105,11 @@
     }
 }
 
+/*DropDownwidget Styles*/
+
 .data-frame {
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    background-color: #fff;
     padding: 10px;
-    margin-top: 20px;
 }
 
 .dropdown-widget {
@@ -135,15 +133,14 @@
 
 .dropdown-menu {
     position: absolute;
-    height:300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     bottom: 100%;
     right: 0;
     min-width: 300px;
-    background-color: #f4f4f4;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
+    max-height: 500px;
     display: none;
+    overflow-y: auto;
 }
 
     .dropdown-menu table {
@@ -158,6 +155,7 @@
         .dropdown-menu table th {
             background-color: #333;
             color: #fff;
+            border-radius: 2px;
         }
 
         .dropdown-menu table td {
@@ -183,3 +181,7 @@
         .dropdown-menu .close-button:hover {
             color: lightgreen;
         }
+
+.table-wrapper {
+    max-height: 100%;
+}

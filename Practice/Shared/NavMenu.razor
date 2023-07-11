@@ -6,10 +6,10 @@
         </button>
     </div>
 
-    <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <div class="@NavMenuCssClass">
         <ul class="nav flex-column">
             <li class="nav-item px-1">
-                <NavLink class="nav-link" href="dropdownwidget">
+                <NavLink class="nav-link" href="dropdownwidget" @onclick="ToggleDropdownWidget">
                     <span class="oi oi-list-rich" aria-hidden="true"></span> DropDown Widget
                 </NavLink>
             </li>
@@ -22,9 +22,9 @@
     </div>
 </div>
 
-
 @code {
     private bool collapseNavMenu = true;
+    private bool isDropdownWidgetOpen = false;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -32,5 +32,9 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
-}
 
+    private void ToggleDropdownWidget()
+    {
+        isDropdownWidgetOpen = !isDropdownWidgetOpen;
+    }
+}

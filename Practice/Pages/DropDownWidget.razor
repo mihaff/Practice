@@ -9,47 +9,55 @@
     <button class="dropdown-toggle" @onclick="ToggleDropdown">
         Show Data
     </button>
-    <div class="dropdown-menu" style="display: @(isDropdownOpen ? "block" : "none")">
-        @if (datamodels == null)
+    <div class="dropdown-menu" style="display: @(isDropdownOpen || isDropdownWidgetOpen ? "block" : "none")">
+        statistics == null
         {
-            <p><em>Loading...</em></p>
+        <p><em>Loading...</em></p>
         }
         else
         {
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Ticker</th>
-                        <th>Price</th>
-                        <th>Change Amount</th>
-                        <th>Change Percentage</th>
-                        <th>Volume</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var data in datamodels)
-                    {
+        <div class="data-frame">
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>@data.Ticker</td>
-                            <td>@data.Price</td>
-                            <td>@data.Change_Amount</td>
-                            <td>@data.Change_Percentage</td>
-                            <td>@data.Volume</td>
+                            <th>Ticker</th>
+                            <th>Price</th>
+                            <th>Change Amount</th>
+                            <th>Change Percentage</th>
+                            <th>Volume</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < statistics.TopGainers.Count; i++)
+                        {
+                            var data = statistics.TopGainers[i];
+                            <tr>
+                                <td>@data.Ticker</td>
+                                <td>@data.Price</td>
+                                <td>@data.Change_Amount</td>
+                                <td>@data.Change_Percentage</td>
+                                <td>@data.Volume</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
         }
+
+
     </div>
 </div>
 
 @code {
     private bool isDropdownOpen = false;
-    private DataModel[] datamodels;
+    [CascadingParameter] private bool isDropdownWidgetOpen { get; set; }
+    private TradedTickerStatistics statistics;
 
     protected override async Task OnInitializedAsync()
     {
-        datamodels = await Http.GetFromJsonAsync<DataModel[]>("https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=8IRABS7SCLY1UNPR");
+        statistics = await Http.GetFromJsonAsync<TradedTickerStatistics>("https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=8IRABS7SCLY1UNPR");
     }
 
     private void ToggleDropdown()
@@ -57,12 +65,35 @@
         isDropdownOpen = !isDropdownOpen;
     }
 
-    public class DataModel
+    public class TradedTickerStatistics
+    {
+        public string Metadata { get; set; }
+
+        [JsonPropertyName("last_updated")]
+        public string LastUpdated { get; set; }
+
+        [JsonPropertyName("top_gainers")]
+        public List<TradedTicker> TopGainers { get; set; }
+
+        [JsonPropertyName("top_losers")]
+        public List<TradedTicker> TopLosers { get; set; }
+
+        [JsonPropertyName("most_actively_trade")]
+        public List<TradedTicker> MostActivelyTraded { get; set; }
+    }
+
+    public class TradedTicker
     {
         public string Ticker { get; set; }
-        public double Price { get; set; }
-        public double Change_Amount { get; set; }
-        public double Change_Percentage { get; set; }
-        public int Volume { get; set; }
+
+        public string Price { get; set; }
+
+        [JsonPropertyName("change_amount")]
+        public string Change_Amount { get; set; }
+
+        [JsonPropertyName("change_percentage")]
+        public string Change_Percentage { get; set; }
+
+        public string Volume { get; set; }
     }
 }
