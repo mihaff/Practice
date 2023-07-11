@@ -1,11 +1,15 @@
 ﻿/* Sidebar styles */
 
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
 .sidebar {
     width: 1470px;
     margin-top: 40px;
     background-color: #efe9e9;
     padding: 20px;
-    font-family: Arial, sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
 
     .sidebar .navbar-brand {
@@ -13,6 +17,7 @@
         font-weight: 600;
         color: #430949;
         padding-bottom: 40px;
+        font-family: 'Montserrat', sans-serif;
     }
 
 li {
@@ -30,7 +35,8 @@ li {
     font-size: 18px;
     padding: 8px 0;
     transition: background-color 0.3s;
-    list-style-type: none
+    list-style-type: none;
+    font-family: 'Montserrat', sans-serif;
 }
 
     .sidebar .nav-link:hover {
@@ -43,6 +49,7 @@ li {
     flex: 1;
     display: flex;
     flex-direction: row;
+    font-family: 'Montserrat', sans-serif;
 }
 
     .main .top-row {
@@ -60,8 +67,8 @@ li {
             margin-left: 20px;
         }
 
-/* Responsive styles */
 
+/* Responsive styles */
 @media (max-width: 768px) {
     .sidebar {
         display: none;
@@ -93,6 +100,7 @@ li {
 
         .sidebar .navbar-toggler .navbar-toggler-icon {
             color: #fff;
+            font-family: 'Montserrat', sans-serif;
         }
 
     .sidebar .nav.flex-column {
@@ -105,11 +113,12 @@ li {
     }
 }
 
-/*DropDownwidget Styles*/
 
+/* DropDownwidget Styles */
 .data-frame {
     background-color: #fff;
     padding: 10px;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .dropdown-widget {
@@ -124,11 +133,13 @@ li {
     color: #fff;
     border: none;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
 }
 
     .dropdown-toggle:focus {
         outline: none;
+        border-radius: 5px;
     }
 
 .dropdown-menu {
@@ -141,34 +152,37 @@ li {
     max-height: 500px;
     display: none;
     overflow-y: auto;
+    background-color: #fff;
 }
 
     .dropdown-menu table {
         width: 100%;
     }
 
-        .dropdown-menu table th,
-        .dropdown-menu table td {
-            padding: 8px;
-        }
+    .dropdown-menu th,
+    .dropdown-menu td {
+        padding: 8px;
+    }
 
-        .dropdown-menu table th {
-            background-color: #333;
-            color: #fff;
-            border-radius: 2px;
-        }
+    .dropdown-menu th {
+        background-color: #584e4e;
+        color: #fff;
+        border-radius: 2px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 15px;
+    }
 
-        .dropdown-menu table td {
-            border-top: 1px solid #ccc;
-        }
+    .dropdown-menu td {
+        border-top: 1px solid #ccc;
+    }
 
-        .dropdown-menu table tr:last-child td {
-            border-bottom: 1px solid #ccc;
-        }
+    .dropdown-menu tr:last-child td {
+        border-bottom: 1px solid #ccc;
+    }
 
-        .dropdown-menu table tbody tr:hover {
-            background-color: #ddd;
-        }
+    .dropdown-menu tbody tr:hover {
+        background-color: #ddd;
+    }
 
     .dropdown-menu .close-button {
         position: absolute;
@@ -176,6 +190,7 @@ li {
         right: 5px;
         color: #999;
         cursor: pointer;
+        font-family: 'Montserrat', sans-serif;
     }
 
         .dropdown-menu .close-button:hover {
@@ -185,3 +200,32 @@ li {
 .table-wrapper {
     max-height: 100%;
 }
+
+/* New styles for buttons */
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+    .buttons button {
+        padding: 8px 12px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+        margin-left: 2px;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+        .buttons button:hover {
+            background-color: #555;
+        }
+
+        .buttons button.active {
+            background-color: #7f7f7f;
+            color: #080707;
+        }
+

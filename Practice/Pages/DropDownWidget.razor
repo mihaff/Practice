@@ -10,50 +10,110 @@
         Show Data
     </button>
     <div class="dropdown-menu" style="display: @(isDropdownOpen || isDropdownWidgetOpen ? "block" : "none")">
-        statistics == null
-        {
-        <p><em>Loading...</em></p>
-        }
-        else
-        {
-        <div class="data-frame">
-            <div class="table-wrapper">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Ticker</th>
-                            <th>Price</th>
-                            <th>Change Amount</th>
-                            <th>Change Percentage</th>
-                            <th>Volume</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < statistics.TopGainers.Count; i++)
-                        {
-                            var data = statistics.TopGainers[i];
-                            <tr>
-                                <td>@data.Ticker</td>
-                                <td>@data.Price</td>
-                                <td>@data.Change_Amount</td>
-                                <td>@data.Change_Percentage</td>
-                                <td>@data.Volume</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+        <div class="buttons">
+            <button class="@GetButtonClass(nameof(ShowTopGainers))" @onclick="ShowTopGainers">Top Gainers</button>
+            <button class="@GetButtonClass(nameof(ShowTopLosers))" @onclick="ShowTopLosers">Top Losers</button>
+            <button class="@GetButtonClass(nameof(ShowMostActivelyTraded))" @onclick="ShowMostActivelyTraded">Most Actively Traded</button>
         </div>
+        @if (statistics != null && (showTopGainers || showTopLosers || showMostActivelyTraded))
+        {
+            <div class="data-frame">
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
+                            @if (showTopGainers)
+                            {
+                                <tr>
+                                    <th>Ticker</th>
+                                    <th>Price</th>
+                                    <th>Change Amount</th>
+                                    <th>Change Percentage</th>
+                                    <th>Volume</th>
+                                </tr>
+                            }
+                            else if (showTopLosers)
+                            {
+                                <tr>
+                                    <th>Ticker</th>
+                                    <th>Price</th>
+                                    <th>Change Amount</th>
+                                    <th>Change Percentage</th>
+                                    <th>Volume</th>
+                                </tr>
+                            }
+                            else if (showMostActivelyTraded)
+                            {
+                                <tr>
+                                    <th>Ticker</th>
+                                    <th>Price</th>
+                                    <th>Change Amount</th>
+                                    <th>Change Percentage</th>
+                                    <th>Volume</th>
+                                </tr>
+                            }
+                        </thead>
+                        <tbody>
+                            @if (showTopGainers)
+                            {
+                                for (int i = 0; i < Math.Min(10, statistics.TopGainers.Count); i++)
+                                {
+                                    var data = statistics.TopGainers[i];
+                                    <tr>
+                                        <td>@data.Ticker</td>
+                                        <td>@data.Price</td>
+                                        <td>@data.Change_Amount</td>
+                                        <td>@data.Change_Percentage</td>
+                                        <td>@data.Volume</td>
+                                    </tr>
+                                }
+                            }
+                            else if (showTopLosers)
+                            {
+                                for (int i = 0; i < Math.Min(10, statistics.TopLosers.Count); i++)
+                                {
+                                    var data = statistics.TopLosers[i];
+                                    <tr>
+                                        <td>@data.Ticker</td>
+                                        <td>@data.Price</td>
+                                        <td>@data.Change_Amount</td>
+                                        <td>@data.Change_Percentage</td>
+                                        <td>@data.Volume</td>
+                                    </tr>
+                                }
+                            }
+                            else if (showMostActivelyTraded)
+                            {
+                                for (int i = 0; i < Math.Min(10, statistics.MostActivelyTraded.Count); i++)
+                                {
+                                    var data = statistics.MostActivelyTraded[i];
+                                    <tr>
+                                        <td>@data.Ticker</td>
+                                        <td>@data.Price</td>
+                                        <td>@data.Change_Amount</td>
+                                        <td>@data.Change_Percentage</td>
+                                        <td>@data.Volume</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         }
-
-
+        else if (statistics == null)
+        {
+            <p><em>Loading...</em></p>
+        }
     </div>
 </div>
 
 @code {
     private bool isDropdownOpen = false;
-    [CascadingParameter] private bool isDropdownWidgetOpen { get; set; }
+    private bool isDropdownWidgetOpen = false;
     private TradedTickerStatistics statistics;
+    private bool showTopGainers = false;
+    private bool showTopLosers = false;
+    private bool showMostActivelyTraded = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,6 +123,38 @@
     private void ToggleDropdown()
     {
         isDropdownOpen = !isDropdownOpen;
+    }
+
+    private void ShowTopGainers()
+    {
+        showTopGainers = true;
+        showTopLosers = false;
+        showMostActivelyTraded = false;
+    }
+
+    private void ShowTopLosers()
+    {
+        showTopGainers = false;
+        showTopLosers = true;
+        showMostActivelyTraded = false;
+    }
+
+    private void ShowMostActivelyTraded()
+    {
+        showTopGainers = false;
+        showTopLosers = false;
+        showMostActivelyTraded = true;
+    }
+
+    private string GetButtonClass(string buttonName)
+    {
+        return buttonName switch
+        {
+            nameof(ShowTopGainers) => showTopGainers ? "active" : "",
+            nameof(ShowTopLosers) => showTopLosers ? "active" : "",
+            nameof(ShowMostActivelyTraded) => showMostActivelyTraded ? "active" : "",
+            _ => ""
+        };
     }
 
     public class TradedTickerStatistics
@@ -78,7 +170,7 @@
         [JsonPropertyName("top_losers")]
         public List<TradedTicker> TopLosers { get; set; }
 
-        [JsonPropertyName("most_actively_trade")]
+        [JsonPropertyName("most_actively_traded")]
         public List<TradedTicker> MostActivelyTraded { get; set; }
     }
 
@@ -97,3 +189,4 @@
         public string Volume { get; set; }
     }
 }
+
