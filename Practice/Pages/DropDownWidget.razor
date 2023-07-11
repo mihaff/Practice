@@ -10,7 +10,7 @@
         Show Data
     </button>
     <div class="dropdown-menu" style="display: @(isDropdownOpen || isDropdownWidgetOpen ? "block" : "none")">
-        statistics == null
+        @if (statistics == null)
         {
         <p><em>Loading...</em></p>
         }
