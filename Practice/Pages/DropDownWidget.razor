@@ -29,7 +29,7 @@
                                     <th>Change Amount</th>
                                     <th>Change Percentage</th>
                                     <th>Volume</th>
-                                    <th>Ticker Decryption</th> 
+                                    <th>Ticker Decryption</th>
                                 </tr>
                             }
                             else if (showTopLosers)
@@ -40,7 +40,7 @@
                                     <th>Change Amount</th>
                                     <th>Change Percentage</th>
                                     <th>Volume</th>
-                                    <th>Ticker Decryption</th> 
+                                    <th>Ticker Decryption</th>
                                 </tr>
                             }
                             else if (showMostActivelyTraded)
@@ -51,7 +51,7 @@
                                     <th>Change Amount</th>
                                     <th>Change Percentage</th>
                                     <th>Volume</th>
-                                    <th>Ticker Decryption</th> 
+                                    <th>Ticker Decryption</th>
                                 </tr>
                             }
                         </thead>
@@ -125,21 +125,20 @@
     {
         statistics = await Http.GetFromJsonAsync<TradedTickerStatistics>("https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=8IRABS7SCLY1UNPR");
 
-        foreach (var ticker in statistics.TopGainers)
+        if (statistics != null)
         {
-            var overview = await Http.GetFromJsonAsync<TickerOverview>($"https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker.Ticker}&apikey=8IRABS7SCLY1UNPR");
-            ticker.TickerDecryption = overview?.Name;
+            await UpdateTickerDecryption(statistics.TopGainers);
+            await UpdateTickerDecryption(statistics.TopLosers);
+            await UpdateTickerDecryption(statistics.MostActivelyTraded);
         }
+    }
 
-        foreach (var ticker in statistics.TopLosers)
+    private async Task UpdateTickerDecryption(List<TradedTicker> tickers)
+    {
+        foreach (var ticker in tickers)
         {
-            var overview = await Http.GetFromJsonAsync<TickerOverview>($"https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker.Ticker}&apikey=8IRABS7SCLY1UNPR");
-            ticker.TickerDecryption = overview?.Name;
-        }
-
-        foreach (var ticker in statistics.MostActivelyTraded)
-        {
-            var overview = await Http.GetFromJsonAsync<TickerOverview>($"https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker.Ticker}&apikey=8IRABS7SCLY1UNPR");
+            var symbol = ticker.Ticker.Replace("+", "");
+            var overview = await Http.GetFromJsonAsync<TickerOverview>($"https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey=8IRABS7SCLY1UNPR");
             ticker.TickerDecryption = overview?.Name;
         }
     }
@@ -154,6 +153,7 @@
         showTopGainers = true;
         showTopLosers = false;
         showMostActivelyTraded = false;
+        statistics?.TopGainers?.ForEach(ticker => ticker.Ticker = ticker.Ticker.Replace("+", ""));
     }
 
     private void ShowTopLosers()
@@ -161,6 +161,7 @@
         showTopGainers = false;
         showTopLosers = true;
         showMostActivelyTraded = false;
+        statistics?.TopLosers?.ForEach(ticker => ticker.Ticker = ticker.Ticker.Replace("+", ""));
     }
 
     private void ShowMostActivelyTraded()
@@ -168,6 +169,7 @@
         showTopGainers = false;
         showTopLosers = false;
         showMostActivelyTraded = true;
+        statistics?.MostActivelyTraded?.ForEach(ticker => ticker.Ticker = ticker.Ticker.Replace("+", ""));
     }
 
     private string GetButtonClass(string buttonName)
@@ -201,17 +203,13 @@
     public class TradedTicker
     {
         public string Ticker { get; set; }
-
         public string Price { get; set; }
-
         [JsonPropertyName("change_amount")]
         public string Change_Amount { get; set; }
-
         [JsonPropertyName("change_percentage")]
         public string Change_Percentage { get; set; }
-
         public string Volume { get; set; }
-
+        [JsonPropertyName("Name")] 
         public string TickerDecryption { get; set; }
     }
 
@@ -220,4 +218,5 @@
         public string Name { get; set; }
     }
 }
+
 

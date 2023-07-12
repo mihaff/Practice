@@ -149,7 +149,7 @@ li {
     bottom: 100%;
     right: 0;
     min-width: 300px;
-    max-height: 500px;
+    max-height: 1000px;
     display: none;
     overflow-y: auto;
     background-color: #fff;
@@ -228,4 +228,3 @@ li {
             background-color: #7f7f7f;
             color: #080707;
         }
-
