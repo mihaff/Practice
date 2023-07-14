@@ -17,50 +17,44 @@
         </div>
         @if (statistics != null && (showTopGainers || showTopLosers || showMostActivelyTraded))
         {
+            <div class="action-buttons">
+                <div class="display-button">
+                    <button class="display-by-button" @onclick="ToggleDisplayInput">Display</button>
+                    @if (displayInputVisible)
+                    {
+                        <div class="display-input">
+                            <input type="number" @bind="displayRowCount" min="1" max="20" />
+                        </div>
+                    }
+                </div>
+                <div class="sort-button">
+                    <div class="dropdown">
+                        <button class="sort-by-button">Sort</button>
+                        <div class="dropdown-content">
+                            <button @onclick="SortByVolume">Volume</button>
+                            <button @onclick="SortByPrice">Price</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="data-frame">
                 <div class="table-wrapper">
                     <table class="table">
                         <thead>
-                            @if (showTopGainers)
-                            {
-                                <tr>
-                                    <th>Ticker</th>
-                                    <th>Price</th>
-                                    <th>Change Amount</th>
-                                    <th>Change Percentage</th>
-                                    <th>Volume</th>
-                                    <th>Ticker Decryption</th>
-                                </tr>
-                            }
-                            else if (showTopLosers)
-                            {
-                                <tr>
-                                    <th>Ticker</th>
-                                    <th>Price</th>
-                                    <th>Change Amount</th>
-                                    <th>Change Percentage</th>
-                                    <th>Volume</th>
-                                    <th>Ticker Decryption</th>
-                                </tr>
-                            }
-                            else if (showMostActivelyTraded)
-                            {
-                                <tr>
-                                    <th>Ticker</th>
-                                    <th>Price</th>
-                                    <th>Change Amount</th>
-                                    <th>Change Percentage</th>
-                                    <th>Volume</th>
-                                    <th>Ticker Decryption</th>
-                                </tr>
-                            }
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Price</th>
+                                <th>Change Amount</th>
+                                <th>Change Percentage</th>
+                                <th>Volume</th>
+                                <th>Ticker Decryption</th>
+                            </tr>
                         </thead>
                         <tbody>
                             @if (showTopGainers)
                             {
-                                for (int i = 0; i < Math.Min(5, statistics.TopGainers.Count); i++)
+                                foreach (var data in GetDisplayedTopGainers())
                                 {
-                                    var data = statistics.TopGainers[i];
                                     <tr>
                                         <td>@data.Ticker</td>
                                         <td>@data.Price</td>
@@ -73,9 +67,8 @@
                             }
                             else if (showTopLosers)
                             {
-                                for (int i = 0; i < Math.Min(5, statistics.TopLosers.Count); i++)
+                                foreach (var data in GetDisplayedTopLosers())
                                 {
-                                    var data = statistics.TopLosers[i];
                                     <tr>
                                         <td>@data.Ticker</td>
                                         <td>@data.Price</td>
@@ -88,9 +81,8 @@
                             }
                             else if (showMostActivelyTraded)
                             {
-                                for (int i = 0; i < Math.Min(5, statistics.MostActivelyTraded.Count); i++)
+                                foreach (var data in GetDisplayedMostActivelyTraded())
                                 {
-                                    var data = statistics.MostActivelyTraded[i];
                                     <tr>
                                         <td>@data.Ticker</td>
                                         <td>@data.Price</td>
@@ -120,6 +112,8 @@
     private bool showTopGainers = false;
     private bool showTopLosers = false;
     private bool showMostActivelyTraded = false;
+    private bool displayInputVisible = false;
+    private int displayRowCount = 5; // Default value
 
     protected override async Task OnInitializedAsync()
     {
@@ -127,14 +121,13 @@
 
         if (statistics != null)
         {
-            await InvokeAsync(() => UpdateTickerDecryption(statistics.TopGainers));
-            await InvokeAsync(() => UpdateTickerDecryption(statistics.TopLosers));
-            await InvokeAsync(() => UpdateTickerDecryption(statistics.MostActivelyTraded));
+            await UpdateTickerDecryption(statistics.TopGainers);
+            await UpdateTickerDecryption(statistics.TopLosers);
+            await UpdateTickerDecryption(statistics.MostActivelyTraded);
         }
 
         StateHasChanged();
     }
-
 
     private async Task UpdateTickerDecryption(List<TradedTicker> tickers)
     {
@@ -146,10 +139,7 @@
                 var overview = await Http.GetFromJsonAsync<TickerOverview>($"https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey=8IRABS7SCLY1UNPR");
                 if (overview != null)
                 {
-                    await InvokeAsync(() =>
-                    {
-                        ticker.TickerDecryption = overview.Name;
-                    });
+                    ticker.TickerDecryption = overview.Name;
                 }
             }
             catch (Exception ex)
@@ -162,6 +152,11 @@
     private void ToggleDropdown()
     {
         isDropdownOpen = !isDropdownOpen;
+    }
+
+    private void ToggleDisplayInput()
+    {
+        displayInputVisible = !displayInputVisible;
     }
 
     private void ShowTopGainers()
@@ -199,6 +194,72 @@
         };
     }
 
+    private IEnumerable<TradedTicker> GetDisplayedTopGainers()
+    {
+        return statistics?.TopGainers?.Take(displayRowCount) ?? Enumerable.Empty<TradedTicker>();
+    }
+
+    private IEnumerable<TradedTicker> GetDisplayedTopLosers()
+    {
+        return statistics?.TopLosers?.Take(displayRowCount) ?? Enumerable.Empty<TradedTicker>();
+    }
+
+    private IEnumerable<TradedTicker> GetDisplayedMostActivelyTraded()
+    {
+        return statistics?.MostActivelyTraded?.Take(displayRowCount) ?? Enumerable.Empty<TradedTicker>();
+    }
+
+    private void SortByVolume()
+    {
+        if (showTopGainers)
+        {
+            statistics?.TopGainers?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
+        }
+        else if (showTopLosers)
+        {
+            statistics?.TopLosers?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
+        }
+        else if (showMostActivelyTraded)
+        {
+            statistics?.MostActivelyTraded?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
+        }
+    }
+
+    private void SortByPrice()
+    {
+        if (showTopGainers)
+        {
+            statistics?.TopGainers?.Sort((a, b) =>
+            {
+                decimal priceA, priceB;
+                decimal.TryParse(a.Price, out priceA);
+                decimal.TryParse(b.Price, out priceB);
+                return priceA.CompareTo(priceB);
+            });
+        }
+        else if (showTopLosers)
+        {
+            statistics?.TopLosers?.Sort((a, b) =>
+            {
+                decimal priceA, priceB;
+                decimal.TryParse(a.Price, out priceA);
+                decimal.TryParse(b.Price, out priceB);
+                return priceA.CompareTo(priceB);
+            });
+        }
+        else if (showMostActivelyTraded)
+        {
+            statistics?.MostActivelyTraded?.Sort((a, b) =>
+            {
+                decimal priceA, priceB;
+                decimal.TryParse(a.Price, out priceA);
+                decimal.TryParse(b.Price, out priceB);
+                return priceA.CompareTo(priceB);
+            });
+        }
+    }
+
+
     public class TradedTickerStatistics
     {
         public string Metadata { get; set; }
@@ -229,11 +290,12 @@
         public string TickerDecryption { get; set; }
     }
 
-
     public class TickerOverview
     {
         public string Name { get; set; }
     }
 }
+
+
 
 

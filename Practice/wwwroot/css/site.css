@@ -201,6 +201,114 @@ li {
     max-height: 100%;
 }
 
+/*Sort button*/
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.sort-button {
+    margin-left: 10px;
+}
+
+.sort-by-button {
+    padding: 8px 12px;
+    background-color: #b2c0a6;
+    color: #333;
+    border: none;
+    cursor: pointer;
+    border-radius: 14px;
+    transition: background-color 0.3s;
+    margin-left: 2px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    min-width: 100px;
+    z-index: 1;
+    border-radius: 4px;
+}
+
+    .dropdown-content button {
+        width: 100%;
+        padding: 8px 12px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+        margin: 2px 0;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+        .dropdown-content button:hover {
+            background-color: #ddd;
+        }
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+/*Display Button*/
+.action-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.display-by-button {
+    padding: 8px 12px;
+    background-color: #b2c0a6;
+    color: #333;
+    border: none;
+    border-radius: 14px;
+    transition: background-color 0.3s;
+    margin-left: 2px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+.display-button {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.display-input {
+    display: flex;
+    align-items: center;
+    position: absolute;
+}
+
+    .display-input input {
+        width: 50px;
+        padding: 4px;
+        margin-left: 6px;
+        margin-top: 2px;
+        border-radius: 4px;
+        border: none;
+        background-color: #333;
+        color: #fff;
+    }
+
+    .display-input button {
+        padding: 4px 8px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+        .display-input button:hover {
+            background-color: #555;
+        }
+
+
+
 /* New styles for buttons */
 .buttons {
     display: flex;
