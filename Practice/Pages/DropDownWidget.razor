@@ -227,38 +227,30 @@
 
     private void SortByPrice()
     {
-        if (showTopGainers)
+        statistics?.TopGainers?.Sort((a, b) =>
         {
-            statistics?.TopGainers?.Sort((a, b) =>
-            {
-                decimal priceA, priceB;
-                decimal.TryParse(a.Price, out priceA);
-                decimal.TryParse(b.Price, out priceB);
-                return priceA.CompareTo(priceB);
-            });
-        }
-        else if (showTopLosers)
-        {
-            statistics?.TopLosers?.Sort((a, b) =>
-            {
-                decimal priceA, priceB;
-                decimal.TryParse(a.Price, out priceA);
-                decimal.TryParse(b.Price, out priceB);
-                return priceA.CompareTo(priceB);
-            });
-        }
-        else if (showMostActivelyTraded)
-        {
-            statistics?.MostActivelyTraded?.Sort((a, b) =>
-            {
-                decimal priceA, priceB;
-                decimal.TryParse(a.Price, out priceA);
-                decimal.TryParse(b.Price, out priceB);
-                return priceA.CompareTo(priceB);
-            });
-        }
-    }
+            decimal priceA, priceB;
+            decimal.TryParse(a.Price, out priceA);
+            decimal.TryParse(b.Price, out priceB);
+            return priceA.CompareTo(priceB);
+        });
 
+        statistics?.TopLosers?.Sort((a, b) =>
+        {
+            decimal priceA, priceB;
+            decimal.TryParse(a.Price, out priceA);
+            decimal.TryParse(b.Price, out priceB);
+            return priceA.CompareTo(priceB);
+        });
+
+        statistics?.MostActivelyTraded?.Sort((a, b) =>
+        {
+            decimal priceA, priceB;
+            decimal.TryParse(a.Price, out priceA);
+            decimal.TryParse(b.Price, out priceB);
+            return priceA.CompareTo(priceB);
+        });
+    }
 
     public class TradedTickerStatistics
     {
