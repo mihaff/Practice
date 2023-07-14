@@ -127,19 +127,35 @@
 
         if (statistics != null)
         {
-            await UpdateTickerDecryption(statistics.TopGainers);
-            await UpdateTickerDecryption(statistics.TopLosers);
-            await UpdateTickerDecryption(statistics.MostActivelyTraded);
+            await InvokeAsync(() => UpdateTickerDecryption(statistics.TopGainers));
+            await InvokeAsync(() => UpdateTickerDecryption(statistics.TopLosers));
+            await InvokeAsync(() => UpdateTickerDecryption(statistics.MostActivelyTraded));
         }
+
+        StateHasChanged();
     }
+
 
     private async Task UpdateTickerDecryption(List<TradedTicker> tickers)
     {
         foreach (var ticker in tickers)
         {
             var symbol = ticker.Ticker.Replace("+", "");
-            var overview = await Http.GetFromJsonAsync<TickerOverview>($"https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey=8IRABS7SCLY1UNPR");
-            ticker.TickerDecryption = overview?.Name;
+            try
+            {
+                var overview = await Http.GetFromJsonAsync<TickerOverview>($"https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey=8IRABS7SCLY1UNPR");
+                if (overview != null)
+                {
+                    await InvokeAsync(() =>
+                    {
+                        ticker.TickerDecryption = overview.Name;
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при получении данных для символа {symbol}: {ex.Message}");
+            }
         }
     }
 
@@ -209,9 +225,10 @@
         [JsonPropertyName("change_percentage")]
         public string Change_Percentage { get; set; }
         public string Volume { get; set; }
-        [JsonPropertyName("Name")] 
+        [JsonPropertyName("name")]  // изменено с "Name" на "name"
         public string TickerDecryption { get; set; }
     }
+
 
     public class TickerOverview
     {
