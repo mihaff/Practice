@@ -1,4 +1,6 @@
 ﻿@page "/dropdownwidget"
+@using Practice.Utils.Converters;
+@using System.Threading;
 @inject HttpClient Http
 
 <h1>Stock Data</h1>
@@ -213,43 +215,38 @@
     {
         if (showTopGainers)
         {
-            statistics?.TopGainers?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
+            statistics?.TopGainers?.Sort((a, b) => a.Volume.CompareTo(b.Volume));
+            //statistics?.TopGainers?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
         }
         else if (showTopLosers)
         {
-            statistics?.TopLosers?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
+            statistics?.TopLosers?.Sort((a, b) => a.Volume.CompareTo(b.Volume));
+            //statistics?.TopLosers?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
         }
         else if (showMostActivelyTraded)
         {
-            statistics?.MostActivelyTraded?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
+            statistics?.MostActivelyTraded?.Sort((a, b) => a.Volume.CompareTo(b.Volume));
+            //statistics?.MostActivelyTraded?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
         }
     }
 
     private void SortByPrice()
     {
-        statistics?.TopGainers?.Sort((a, b) =>
+        if (showTopGainers)
         {
-            decimal priceA, priceB;
-            decimal.TryParse(a.Price, out priceA);
-            decimal.TryParse(b.Price, out priceB);
-            return priceA.CompareTo(priceB);
-        });
-
-        statistics?.TopLosers?.Sort((a, b) =>
+            statistics?.TopGainers?.Sort((a, b) => a.Price.CompareTo(b.Price));
+            //statistics?.TopGainers?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
+        }
+        else if (showTopLosers)
         {
-            decimal priceA, priceB;
-            decimal.TryParse(a.Price, out priceA);
-            decimal.TryParse(b.Price, out priceB);
-            return priceA.CompareTo(priceB);
-        });
-
-        statistics?.MostActivelyTraded?.Sort((a, b) =>
+            statistics?.TopLosers?.Sort((a, b) => a.Price.CompareTo(b.Price));
+            //statistics?.TopLosers?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
+        }
+        else if (showMostActivelyTraded)
         {
-            decimal priceA, priceB;
-            decimal.TryParse(a.Price, out priceA);
-            decimal.TryParse(b.Price, out priceB);
-            return priceA.CompareTo(priceB);
-        });
+            statistics?.MostActivelyTraded?.Sort((a, b) => a.Price.CompareTo(b.Price));
+            //statistics?.MostActivelyTraded?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
+        }
     }
 
     public class TradedTickerStatistics
@@ -272,13 +269,20 @@
     public class TradedTicker
     {
         public string Ticker { get; set; }
-        public string Price { get; set; }
+
+        [JsonConverter(typeof(DoubleJsonConverter))]
+        public double Price { get; set; }
+
         [JsonPropertyName("change_amount")]
         public string Change_Amount { get; set; }
+
         [JsonPropertyName("change_percentage")]
         public string Change_Percentage { get; set; }
-        public string Volume { get; set; }
-        [JsonPropertyName("name")]  // изменено с "Name" на "name"
+
+        [JsonConverter(typeof(IntJsonConverter))]
+        public int Volume { get; set; }
+
+        [JsonPropertyName("name")]
         public string TickerDecryption { get; set; }
     }
 
