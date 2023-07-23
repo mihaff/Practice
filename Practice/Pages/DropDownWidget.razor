@@ -1,5 +1,6 @@
 ﻿@page "/dropdownwidget"
 @using Practice.Utils.Converters;
+@using Practice.Models;
 @using System.Threading;
 @inject HttpClient Http
 
@@ -216,17 +217,14 @@
         if (showTopGainers)
         {
             statistics?.TopGainers?.Sort((a, b) => a.Volume.CompareTo(b.Volume));
-            //statistics?.TopGainers?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
         }
         else if (showTopLosers)
         {
             statistics?.TopLosers?.Sort((a, b) => a.Volume.CompareTo(b.Volume));
-            //statistics?.TopLosers?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
         }
         else if (showMostActivelyTraded)
         {
             statistics?.MostActivelyTraded?.Sort((a, b) => a.Volume.CompareTo(b.Volume));
-            //statistics?.MostActivelyTraded?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
         }
     }
 
@@ -235,55 +233,15 @@
         if (showTopGainers)
         {
             statistics?.TopGainers?.Sort((a, b) => a.Price.CompareTo(b.Price));
-            //statistics?.TopGainers?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
         }
         else if (showTopLosers)
         {
             statistics?.TopLosers?.Sort((a, b) => a.Price.CompareTo(b.Price));
-            //statistics?.TopLosers?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
         }
         else if (showMostActivelyTraded)
         {
             statistics?.MostActivelyTraded?.Sort((a, b) => a.Price.CompareTo(b.Price));
-            //statistics?.MostActivelyTraded?.Sort((a, b) => int.Parse(a.Volume).CompareTo(int.Parse(b.Volume)));
         }
-    }
-
-    public class TradedTickerStatistics
-    {
-        public string Metadata { get; set; }
-
-        [JsonPropertyName("last_updated")]
-        public string LastUpdated { get; set; }
-
-        [JsonPropertyName("top_gainers")]
-        public List<TradedTicker> TopGainers { get; set; }
-
-        [JsonPropertyName("top_losers")]
-        public List<TradedTicker> TopLosers { get; set; }
-
-        [JsonPropertyName("most_actively_traded")]
-        public List<TradedTicker> MostActivelyTraded { get; set; }
-    }
-
-    public class TradedTicker
-    {
-        public string Ticker { get; set; }
-
-        [JsonConverter(typeof(DoubleJsonConverter))]
-        public double Price { get; set; }
-
-        [JsonPropertyName("change_amount")]
-        public string Change_Amount { get; set; }
-
-        [JsonPropertyName("change_percentage")]
-        public string Change_Percentage { get; set; }
-
-        [JsonConverter(typeof(IntJsonConverter))]
-        public int Volume { get; set; }
-
-        [JsonPropertyName("name")]
-        public string TickerDecryption { get; set; }
     }
 
     public class TickerOverview
