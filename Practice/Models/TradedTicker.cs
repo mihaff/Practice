@@ -22,8 +22,6 @@ namespace Practice.Models
 
         [JsonConverter(typeof(IntJsonConverter))]
         public int Volume { get; set; }
-
-        [JsonPropertyName("name")]
-        public string TickerDecryption { get; set; }
     }
+
 }

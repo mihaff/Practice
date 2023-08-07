@@ -50,7 +50,6 @@
                                 <th>Change Amount</th>
                                 <th>Change Percentage</th>
                                 <th>Volume</th>
-                                <th>Ticker Decryption</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -59,12 +58,11 @@
                                 foreach (var data in GetDisplayedTopGainers())
                                 {
                                     <tr>
-                                        <td>@data.Ticker</td>
+                                        <td><a href="https://www.alphavantage.co/query?function=OVERVIEW&symbol=@data.Ticker&apikey=8IRABS7SCLY1UNPR">@data.Ticker</a></td>
                                         <td>@data.Price</td>
                                         <td>@data.Change_Amount</td>
                                         <td>@data.Change_Percentage</td>
                                         <td>@data.Volume</td>
-                                        <td>@data.TickerDecryption</td>
                                     </tr>
                                 }
                             }
@@ -73,12 +71,11 @@
                                 foreach (var data in GetDisplayedTopLosers())
                                 {
                                     <tr>
-                                        <td>@data.Ticker</td>
+                                        <td><a href="https://www.alphavantage.co/query?function=OVERVIEW&symbol=@data.Ticker&apikey=8IRABS7SCLY1UNPR">@data.Ticker</a></td>
                                         <td>@data.Price</td>
                                         <td>@data.Change_Amount</td>
                                         <td>@data.Change_Percentage</td>
                                         <td>@data.Volume</td>
-                                        <td>@data.TickerDecryption</td>
                                     </tr>
                                 }
                             }
@@ -87,16 +84,16 @@
                                 foreach (var data in GetDisplayedMostActivelyTraded())
                                 {
                                     <tr>
-                                        <td>@data.Ticker</td>
+                                        <td><a href="https://www.alphavantage.co/query?function=OVERVIEW&symbol=@data.Ticker&apikey=8IRABS7SCLY1UNPR">@data.Ticker</a></td>
                                         <td>@data.Price</td>
                                         <td>@data.Change_Amount</td>
                                         <td>@data.Change_Percentage</td>
                                         <td>@data.Volume</td>
-                                        <td>@data.TickerDecryption</td>
                                     </tr>
                                 }
                             }
                         </tbody>
+
                     </table>
                 </div>
             </div>
@@ -121,35 +118,6 @@
     protected override async Task OnInitializedAsync()
     {
         statistics = await Http.GetFromJsonAsync<TradedTickerStatistics>("https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=8IRABS7SCLY1UNPR");
-
-        if (statistics != null)
-        {
-            await UpdateTickerDecryption(statistics.TopGainers);
-            await UpdateTickerDecryption(statistics.TopLosers);
-            await UpdateTickerDecryption(statistics.MostActivelyTraded);
-        }
-
-        StateHasChanged();
-    }
-
-    private async Task UpdateTickerDecryption(List<TradedTicker> tickers)
-    {
-        foreach (var ticker in tickers)
-        {
-            var symbol = ticker.Ticker.Replace("+", "");
-            try
-            {
-                var overview = await Http.GetFromJsonAsync<TickerOverview>($"https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey=8IRABS7SCLY1UNPR");
-                if (overview != null)
-                {
-                    ticker.TickerDecryption = overview.Name;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ошибка при получении данных для символа {symbol}: {ex.Message}");
-            }
-        }
     }
 
     private void ToggleDropdown()
@@ -212,19 +180,19 @@
         return statistics?.MostActivelyTraded?.Take(displayRowCount) ?? Enumerable.Empty<TradedTicker>();
     }
 
-    private void SortByVolume()
+    private void SortByVolume() 
     {
         if (showTopGainers)
         {
-            statistics?.TopGainers?.Sort((a, b) => a.Volume.CompareTo(b.Volume));
+            statistics?.TopGainers?.Sort((a, b) => b.Volume.CompareTo(a.Volume));
         }
         else if (showTopLosers)
         {
-            statistics?.TopLosers?.Sort((a, b) => a.Volume.CompareTo(b.Volume));
+            statistics?.TopLosers?.Sort((a, b) => b.Volume.CompareTo(a.Volume));
         }
         else if (showMostActivelyTraded)
         {
-            statistics?.MostActivelyTraded?.Sort((a, b) => a.Volume.CompareTo(b.Volume));
+            statistics?.MostActivelyTraded?.Sort((a, b) => b.Volume.CompareTo(a.Volume));
         }
     }
 
@@ -232,22 +200,18 @@
     {
         if (showTopGainers)
         {
-            statistics?.TopGainers?.Sort((a, b) => a.Price.CompareTo(b.Price));
+            statistics?.TopGainers?.Sort((a, b) => b.Price.CompareTo(a.Price));
         }
         else if (showTopLosers)
         {
-            statistics?.TopLosers?.Sort((a, b) => a.Price.CompareTo(b.Price));
+            statistics?.TopLosers?.Sort((a, b) => b.Price.CompareTo(a.Price));
         }
         else if (showMostActivelyTraded)
         {
-            statistics?.MostActivelyTraded?.Sort((a, b) => a.Price.CompareTo(b.Price));
+            statistics?.MostActivelyTraded?.Sort((a, b) => b.Price.CompareTo(a.Price));
         }
     }
 
-    public class TickerOverview
-    {
-        public string Name { get; set; }
-    }
 }
 
 
